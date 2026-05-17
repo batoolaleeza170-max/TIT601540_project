@@ -1,53 +1,74 @@
 import 'package:flutter/material.dart';
-import '../services/api_service.dart';
-import '../models/user_model.dart';
-class HomeScreen extends StatefulWidget {
+
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-class _HomeScreenState extends State<HomeScreen> {
-  List<UserModel> users = [];
-  bool isLoading = true;
-  @override
-  void initState() {
-    super.initState();
-    fetchUsers();
+
+  Widget infoCard(String title, String value, IconData icon) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: Colors.blue,
+          size: 35,
+        ),
+        title: Text(title),
+        subtitle: Text(value),
+      ),
+    );
   }
-  void fetchUsers() async {
-    try {
-      final data = await ApiService().getUsers();
-      setState(() {
-        users = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("NOVA Dashboard"),
+        title: const Text("Nova Smart Wheelchair"),
+        centerTitle: true,
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.all(10),
-            child: ListTile(
-              leading: const Icon(Icons.person, color: Colors.blue),
-              title: Text(users[index].name),
-              subtitle: Text(users[index].email),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+
+            infoCard(
+              "Battery",
+              "85%",
+              Icons.battery_full,
             ),
-          );
-        },
+
+            infoCard(
+              "Obstacle Detection",
+              "Active",
+              Icons.warning,
+            ),
+
+            infoCard(
+              "Voice Command",
+              "Listening...",
+              Icons.mic,
+            ),
+
+            infoCard(
+              "Firebase Status",
+              "Connected",
+              Icons.cloud_done,
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.navigation),
+              label: const Text("Start Navigation"),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 55),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
